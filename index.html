@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thầy Sơn Tùng - Đua Top 10 Phút: Nhà Máy In Sách</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --primary-dark: #EE5253;
+            --secondary: #48DBFB;
+            --accent: #FECA57;
+            --dark: #222F3E;
+            --light: #F7F9FC;
+            --success: #1DD1A1;
+            --purple: #5F27CD;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3799, #0c2461);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: #333;
+        }
+
+        .game-container {
+            background: var(--light);
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            overflow: hidden;
+            border: 4px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        header {
+            background: linear-gradient(135deg, #3c40c6, #575fcf);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+            position: relative;
+        }
+
+        .brand-badge {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slogan {
+            font-size: 0.9rem;
+            color: #d2dae2;
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .audio-toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .dashboard {
+            background: #2f3542;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-bottom: 2px solid #57606f;
+        }
+
+        .dash-card { text-align: center; }
+        .dash-title { font-size: 0.75rem; color: #a4b0be; text-transform: uppercase; font-weight: bold; }
+        .dash-value { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+        .dash-value.timer { color: #ff4757; }
+        .dash-value.combo { color: #1dd1a1; }
+
+        .mode-selector {
+            display: flex;
+            background: #dcdde1;
+            padding: 5px;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--purple);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .mode-btn.btn-mix.active {
+            background: var(--accent);
+            color: #000;
+            font-weight: 800;
+        }
+
+        .main-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--purple);
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .question-highlight {
+            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 1.3rem;
+            background: #ffeaa7;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .answer-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border: 2px solid #ced6e0;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-submit { background: var(--success); color: white; }
+        .btn-next { background: var(--secondary); color: var(--dark); }
+
+        .feedback-modal {
+            background: #f1f2f6;
+            border-radius: 12px;
+            padding: 15px;
+            display: none;
+        }
+
+        .feedback-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .feedback-correct { color: var(--success); }
+        .feedback-wrong { color: var(--primary); }
+
+        .explanation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+        }
+
+        .explanation-table th, .explanation-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #dcdde1;
+            font-size: 0.85rem;
+        }
+
+        .explanation-table th { background: var(--purple); color: white; }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(12, 36, 97, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .game-over-card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            border: 4px solid var(--accent);
+        }
+
+        .game-over-title {
+            font-size: 2rem;
+            color: var(--purple);
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dcdde1;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background: #f1f2f6;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #747d8c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <header>
+        <button class="audio-toggle-btn" id="music-btn" onclick="toggleMusic()">🎵 Nhạc Nền: TẮT</button>
+        <div class="brand-badge">THẦY SƠN TÙNG</div>
+        <div class="slogan">Chơi Toán Thông Minh – Mở Màn Bứt Phá!</div>
+    </header>
+
+    <div class="dashboard">
+        <div class="dash-card">
+            <div class="dash-title">⏱️ THỜI GIAN</div>
+            <div class="dash-value timer" id="timer-display">10:00</div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-title">🏆 TỔNG ĐIỂM</div>
+            <div class="dash-value" id="score-display">0</div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-title">🔥 COMBO</div>
+            <div class="dash-value combo" id="combo-display">0x</div>
+        </div>
+        <div class="dash-card">
+            <div class="dash-title">✅ ĐÚNG / SAI</div>
+            <div class="dash-value" id="stats-display" style="color:#70a1ff">0/0</div>
+        </div>
+    </div>
+
+    <div class="mode-selector">
+        <button class="mode-btn active" id="btn-mode-1" onclick="switchMode(1)">📖 Dạng 1: Tính chữ số</button>
+        <button class="mode-btn" id="btn-mode-2" onclick="switchMode(2)">🔢 Dạng 2: Tìm số trang</button>
+        <button class="mode-btn btn-mix" id="btn-mode-3" onclick="switchMode(3)">🎲 Dạng 3: Trộn Lẫn Hỗn Hợp</button>
+    </div>
+
+    <div class="main-content">
+        <div class="question-card">
+            <div class="question-text" id="question-text">Đang tải câu hỏi...</div>
+        </div>
+
+        <div class="answer-section">
+            <input type="number" id="user-answer" class="answer-input" placeholder="Nhập đáp án..." onkeypress="if(event.key==='Enter') checkAnswer();">
+            <button class="btn btn-submit" id="btn-check" onclick="checkAnswer()">⚡ Kiểm Tra</button>
+            <button class="btn btn-next" id="btn-next" style="display:none;" onclick="generateQuestion()">🔄 Câu Tiếp Theo</button>
+        </div>
+
+        <div class="feedback-modal" id="feedback-modal">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div id="feedback-detail"></div>
+            <table class="explanation-table">
+                <thead>
+                    <tr>
+                        <th>Nhóm trang</th>
+                        <th>Số trang</th>
+                        <th>Số chữ số/Trang</th>
+                        <th>Tổng chữ số</th>
+                    </tr>
+                </thead>
+                <tbody id="explanation-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>Game Thi Đấu Lớp Học • Thầy Sơn Tùng</footer>
+
+    <div class="game-over-overlay" id="game-over-modal">
+        <div class="game-over-card">
+            <div class="game-over-title">⏰ HẾT GIỜ THI ĐẤU!</div>
+            <p style="margin-bottom: 20px; font-weight: bold; color: #57606f;">Học sinh hãy báo kết quả này cho Thầy Sơn Tùng nhé!</p>
+            
+            <div class="stat-row">
+                <span>🏆 Tổng điểm đạt được:</span>
+                <span id="final-score" style="color: var(--purple); font-size: 1.4rem;">0</span>
+            </div>
+            <div class="stat-row">
+                <span>🎯 Số câu trả lời đúng:</span>
+                <span id="final-correct" style="color: var(--success);">0</span>
+            </div>
+            <div class="stat-row">
+                <span>❌ Số câu sai:</span>
+                <span id="final-wrong" style="color: var(--primary);">0</span>
+            </div>
+            <div class="stat-row">
+                <span>🔥 Chuỗi đúng dài nhất:</span>
+                <span id="final-max-combo" style="color: var(--accent);">0</span>
+            </div>
+
+            <button class="btn btn-submit" style="width: 100%; margin-top: 25px;" onclick="resetGame10Min()">🚀 Chơi Lại Từ Đầu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // GAME STATE
+    let selectedMode = 1; // 1: Pages -> Digits, 2: Digits -> Pages, 3: Mixed
+    let actualQuestionType = 1; // 1 or 2
+    let currentData = {};
+    let score = 0;
+    let combo = 0;
+    let maxCombo = 0;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    let timeLeft = 600; 
+    let timerInterval = null;
+    let isGameOver = false;
+
+    // UPBEAT 8-BIT MUSIC SYNTHESIZER
+    let audioCtx = null;
+    let isMusicPlaying = false;
+    let musicInterval = null;
+
+    function safeInitAudio() {
+        try {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        } catch (e) {}
+    }
+
+    function toggleMusic() {
+        safeInitAudio();
+        const musicBtn = document.getElementById('music-btn');
+        if (!isMusicPlaying) {
+            isMusicPlaying = true;
+            musicBtn.innerHTML = "🔊 Nhạc Nền: BẬT";
+            musicBtn.style.background = "#1dd1a1";
+            startBackgroundMusic();
+        } else {
+            isMusicPlaying = false;
+            musicBtn.innerHTML = "🎵 Nhạc Nền: TẮT";
+            musicBtn.style.background = "rgba(255,255,255,0.2)";
+            stopBackgroundMusic();
+        }
+    }
+
+    // GIAI ĐIỆU UPBEAT VUI NHỘN (MARIO / CHIPTUNE STYLE)
+    const melodyNotes = [
+        261.63, 329.63, 392.00, 523.25, 392.00, 523.25, 659.25, 523.25,
+        349.23, 440.00, 523.25, 698.46, 523.25, 440.00, 392.00, 329.63
+    ];
+    const bassNotes = [130.81, 130.81, 174.61, 174.61, 196.00, 196.00, 130.81, 196.00];
+    let noteIdx = 0;
+
+    function startBackgroundMusic() {
+        if (musicInterval) clearInterval(musicInterval);
+        musicInterval = setInterval(() => {
+            if (!isMusicPlaying || !audioCtx) return;
+            try {
+                const now = audioCtx.currentTime;
+                
+                // Melody Lead
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(melodyNotes[noteIdx], now);
+                gain.gain.setValueAtTime(0.015, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+
+                // Bassline
+                if (noteIdx % 2 === 0) {
+                    const bassOsc = audioCtx.createOscillator();
+                    const bassGain = audioCtx.createGain();
+                    bassOsc.type = 'triangle';
+                    bassOsc.frequency.setValueAtTime(bassNotes[Math.floor(noteIdx/2) % bassNotes.length], now);
+                    bassGain.gain.setValueAtTime(0.03, now);
+                    bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    bassOsc.connect(bassGain);
+                    bassGain.connect(audioCtx.destination);
+                    bassOsc.start(now);
+                    bassOsc.stop(now + 0.25);
+                }
+
+                noteIdx = (noteIdx + 1) % melodyNotes.length;
+            } catch(e) {}
+        }, 180); // Nhịp điệu nhanh 180ms
+    }
+
+    function stopBackgroundMusic() {
+        if (musicInterval) clearInterval(musicInterval);
+    }
+
+    function playSound(type) {
+        safeInitAudio();
+        if (!audioCtx) return;
+
+        try {
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.setValueAtTime(110, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        } catch(e) {}
+    }
+
+    // MATH LOGIC
+    function calculateDigits(pages) {
+        let p1 = 0, p2 = 0, p3 = 0;
+        if (pages <= 9) { p1 = pages; }
+        else if (pages <= 99) { p1 = 9; p2 = pages - 9; }
+        else { p1 = 9; p2 = 90; p3 = pages - 99; }
+        
+        let d1 = p1 * 1, d2 = p2 * 2, d3 = p3 * 3;
+        return { pages, digits: d1 + d2 + d3, p1, p2, p3, d1, d2, d3 };
+    }
+
+    function switchMode(mode) {
+        if (isGameOver) return;
+        selectedMode = mode;
+        document.getElementById('btn-mode-1').classList.toggle('active', mode === 1);
+        document.getElementById('btn-mode-2').classList.toggle('active', mode === 2);
+        document.getElementById('btn-mode-3').classList.toggle('active', mode === 3);
+        generateQuestion();
+    }
+
+    function generateQuestion() {
+        if (isGameOver) return;
+        document.getElementById('user-answer').value = '';
+        document.getElementById('user-answer').disabled = false;
+        document.getElementById('btn-check').style.display = 'inline-block';
+        document.getElementById('btn-next').style.display = 'none';
+        document.getElementById('feedback-modal').style.display = 'none';
+
+        // Xác định loại câu hỏi
+        if (selectedMode === 3) {
+            actualQuestionType = Math.random() < 0.5 ? 1 : 2;
+        } else {
+            actualQuestionType = selectedMode;
+        }
+
+        if (actualQuestionType === 1) {
+            let randomPages = Math.floor(Math.random() * 140) + 15;
+            currentData = calculateDigits(randomPages);
+            document.getElementById('question-text').innerHTML = 
+                `Một cuốn sách có tổng cộng <span class="question-highlight">${currentData.pages} trang</span>. ` +
+                `Hỏi cần dùng bao nhiêu <span class="question-highlight">chữ số</span> để đánh số trang cho cuốn sách này?`;
+        } else {
+            let randomPages = Math.floor(Math.random() * 105) + 15;
+            currentData = calculateDigits(randomPages);
+            document.getElementById('question-text').innerHTML = 
+                `Bác thợ in dùng hết tất cả <span class="question-highlight">${currentData.digits} chữ số</span> để đánh số trang một cuốn sách. ` +
+                `Hỏi cuốn sách đó dày bao nhiêu <span class="question-highlight">trang</span>?`;
+        }
+    }
+
+    function checkAnswer() {
+        if (isGameOver) return;
+        const userVal = parseInt(document.getElementById('user-answer').value);
+        if (isNaN(userVal)) {
+            alert("Em hãy nhập câu trả lời là số nhé!");
+            return;
+        }
+
+        let expectedVal = (actualQuestionType === 1) ? currentData.digits : currentData.pages;
+        const feedbackModal = document.getElementById('feedback-modal');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackDetail = document.getElementById('feedback-detail');
+
+        if (userVal === expectedVal) {
+            playSound('correct');
+            totalCorrect++;
+            combo++;
+            if (combo > maxCombo) maxCombo = combo;
+
+            let gainedScore = 100 + (combo - 1) * 20;
+            score += gainedScore;
+
+            feedbackTitle.className = "feedback-title feedback-correct";
+            feedbackTitle.innerHTML = `🎉 CHÍNH XÁC! (+${gainedScore} Điểm)`;
+            feedbackDetail.innerHTML = `Đáp án đúng là <b>${expectedVal}</b>. Bảng hướng dẫn chi tiết:`;
+        } else {
+            playSound('wrong');
+            totalWrong++;
+            combo = 0;
+            score = Math.max(0, score - 20);
+
+            feedbackTitle.className = "feedback-title feedback-wrong";
+            feedbackTitle.innerHTML = "❌ CHƯA ĐÚNG RỒI! (-20 Điểm)";
+            feedbackDetail.innerHTML = `Đáp án đúng phải là <b>${expectedVal}</b>. Em xem hướng dẫn bên dưới nhé:`;
+        }
+
+        document.getElementById('score-display').innerText = score;
+        document.getElementById('combo-display').innerText = combo + 'x';
+        document.getElementById('stats-display').innerText = `${totalCorrect}/${totalWrong}`;
+
+        document.getElementById('explanation-body').innerHTML = `
+            <tr><td>1 đến 9</td><td>${currentData.p1} trang</td><td>1</td><td>${currentData.d1} chữ số</td></tr>
+            ${currentData.p2 > 0 ? `<tr><td>10 đến 99</td><td>${currentData.p2} trang</td><td>2</td><td>${currentData.d2} chữ số</td></tr>` : ''}
+            ${currentData.p3 > 0 ? `<tr><td>100 trở đi</td><td>${currentData.p3} trang</td><td>3</td><td>${currentData.d3} chữ số</td></tr>` : ''}
+            <tr style="font-weight: bold; background: #ffeaa7;">
+                <td>TỔNG CỘNG</td><td>${currentData.pages} trang</td><td>-</td><td>${currentData.digits} chữ số</td>
+            </tr>
+        `;
+
+        feedbackModal.style.display = 'block';
+        document.getElementById('user-answer').disabled = true;
+        document.getElementById('btn-check').style.display = 'none';
+        document.getElementById('btn-next').style.display = 'inline-block';
+    }
+
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let mins = Math.floor(timeLeft / 60);
+            let secs = timeLeft % 60;
+            document.getElementById('timer-display').innerText = 
+                `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                endGame10Min();
+            }
+        }, 1000);
+    }
+
+    function endGame10Min() {
+        isGameOver = true;
+        document.getElementById('game-over-modal').style.display = 'flex';
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('final-correct').innerText = totalCorrect;
+        document.getElementById('final-wrong').innerText = totalWrong;
+        document.getElementById('final-max-combo').innerText = maxCombo + 'x';
+    }
+
+    function resetGame10Min() {
+        score = 0; combo = 0; maxCombo = 0;
+        totalCorrect = 0; totalWrong = 0;
+        timeLeft = 600; isGameOver = false;
+
+        document.getElementById('score-display').innerText = '0';
+        document.getElementById('combo-display').innerText = '0x';
+        document.getElementById('stats-display').innerText = '0/0';
+        document.getElementById('game-over-modal').style.display = 'none';
+
+        startTimer();
+        generateQuestion();
+    }
+
+    window.onload = function() {
+        startTimer();
+        generateQuestion();
+    };
+</script>
+</body>
+</html>
